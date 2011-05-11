@@ -1,4 +1,4 @@
-name: LightningRod
+name: Tinderbox
 author: Tinderbox
-main: net.inabsentia.LightningRod.LightningRod
+main: net.inabsentia.bukkit.Tinderbox.Tinderbox
 version: 0.1
