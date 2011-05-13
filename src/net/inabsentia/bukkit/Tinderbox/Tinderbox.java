@@ -22,7 +22,7 @@ public class Tinderbox extends JavaPlugin{
 	
 	private static final Logger logger = Logger.getLogger("Minecraft.Tinderbox");
 	public PluginDescriptionFile pdfFile;
-	public PermissionHandler permissionHandler;
+	public static PermissionHandler Permissions;
 
 	
 	private final TinBlockListener bListener = new TinBlockListener(this);
@@ -63,11 +63,11 @@ public class Tinderbox extends JavaPlugin{
 	}
 	
 	private void setupPermissions() {
-	      Plugin permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
+			Plugin test = this.getServer().getPluginManager().getPlugin("Permissions");
 	
-	      if (this.permissionHandler == null) {
-		      if (permissionsPlugin != null) {
-		          this.permissionHandler = ((Permissions) permissionsPlugin).getHandler();
+	      if (Tinderbox.Permissions == null) {
+		      if (test != null) {
+		          Tinderbox.Permissions = ((Permissions) test).getHandler();
 		          systemMessage("Using Permissions");
 		      } else {
 		    	  systemMessage("Permission system not detected, defaulting to OP");
@@ -98,7 +98,7 @@ public class Tinderbox extends JavaPlugin{
     	return null;
     }
     private void loadCommands(){
-    	getCommand("tinderbox").setExecutor(new TinCommands(this));
+    	getCommand("tb").setExecutor(new TinCommands(this));
     	//getCommand("archers").setExecutor(new Archerscommand(this));
     }
 

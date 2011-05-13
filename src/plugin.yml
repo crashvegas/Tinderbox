@@ -3,8 +3,6 @@ author: Tinderbox
 main: net.inabsentia.bukkit.Tinderbox.Tinderbox
 version: 0.1
 commands:
-  tinderbox:
+  tb:
     description: Toggle the lighting rod on and off
-    usage: /<command>
-    aliases: [lrod]
-    permission: tinderbox.lightningrod
+    usage: /<command> [option] (on|off)
