@@ -4,45 +4,102 @@ import java.util.logging.Logger;
 
 import net.inabsentia.bukkit.Tinderbox.TinBlockListener;
 import net.inabsentia.bukkit.Tinderbox.TinPlayerListener;
+import net.inabsentia.bukkit.Tinderbox.Commands.TinCommands;
 
+
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.nijiko.permissions.PermissionHandler;
+import com.nijikokun.bukkit.Permissions.Permissions;
 
 public class Tinderbox extends JavaPlugin{
 	
 	private static final Logger logger = Logger.getLogger("Minecraft.Tinderbox");
 	public PluginDescriptionFile pdfFile;
+	public PermissionHandler permissionHandler;
+
 	
 	private final TinBlockListener bListener = new TinBlockListener(this);
 	private final TinPlayerListener pListener = new TinPlayerListener(this);
 
 	
-	public Logger getLogger() {
-        return logger;
-    }
-	
 	@Override
 	public void onDisable() {
-		pdfFile = this.getDescription();
-		logger.info(pdfFile.getName() + " has been disabled.");
+		logger.info("has been disabled.");
 	}
 
 	@Override
 	public void onEnable() {
-		pdfFile = this.getDescription();
-		logger.info(pdfFile.getName() + " v" + pdfFile.getVersion() + " is enabled!");
 		
-		getDataFolder().mkdirs();
+        // Get commands
+		loadCommands();
 		
+		// Register events
+		registerEvents();
+		
+		// Set up permissions
+		setupPermissions();
+		
+		// Set up properties
+		TinProperties.reload();
+
+		systemMessage("is enabled.");
+
+		
+	}
+	
+	private void registerEvents(){
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvent(Event.Type.BLOCK_BREAK, bListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_PLACE, bListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_ITEM_HELD, pListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_INTERACT, pListener, Priority.Normal, this);
-		
 	}
+	
+	private void setupPermissions() {
+	      Plugin permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
+	
+	      if (this.permissionHandler == null) {
+		      if (permissionsPlugin != null) {
+		          this.permissionHandler = ((Permissions) permissionsPlugin).getHandler();
+		          systemMessage("Using Permissions");
+		      } else {
+		    	  systemMessage("Permission system not detected, defaulting to OP");
+	          }
+	      }
+	 }
+	
+	public String getName(){
+        PluginDescriptionFile pdfFile = this.getDescription();
+        return pdfFile.getName();
+    }
+	
+    public String getVersion(){
+        PluginDescriptionFile pdfFile = this.getDescription();
+        return pdfFile.getVersion();
+    }	
+    
+	public void systemMessage(String message){
+		logger.info("["+getName()+" : "+getVersion()+"] "+message);
+    }
+	
+	public Player getPlayer(String name){
+		for(Player pl : this.getServer().getOnlinePlayers()){
+			if(pl.getName().toLowerCase().startsWith(name.toLowerCase())){
+				return pl;
+			}
+		}
+    	return null;
+    }
+    private void loadCommands(){
+    	getCommand("tinderbox").setExecutor(new TinCommands(this));
+    	//getCommand("archers").setExecutor(new Archerscommand(this));
+    }
 
 }

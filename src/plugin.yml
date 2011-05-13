@@ -2,3 +2,9 @@ name: Tinderbox
 author: Tinderbox
 main: net.inabsentia.bukkit.Tinderbox.Tinderbox
 version: 0.1
+commands:
+tinderbox:
+  description: Toggle the lighting rod on and off
+  usage: /<command>
+  aliases: [lrod]
+  permission: tinderbox.lightningrod
